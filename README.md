@@ -11,7 +11,7 @@ touch robotcontainer.py
 ```
 self.frontLeftMotor = ctre.WPI_VictorSPX(2)
 ```
-### 3 - CamelCase for methods/functions.
+### 3 - Camelcase for methods/functions.
 ```
     def myMethod(self):
         pass
