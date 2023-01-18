@@ -4,6 +4,8 @@ import commands2
 import commands2.button
 import commands2.cmd
 
+from subsystems.drivesubsystem import DriveSubsystem
+
 
 class RobotContainer:
     """
@@ -14,7 +16,21 @@ class RobotContainer:
     """
 
     def __init__(self) -> None:
-        pass
+        self.drive_subsystem = DriveSubsystem()
+
+        self.driver_controller = commands2.button.CommandJoystick(0)
+
+        self.drive_subsystem.setDefaultCommand(
+            commands2.cmd.run(
+                lambda: self.drive_subsystem.drive(
+                    self.driver_controller.getX(),
+                    self.driver_controller.getZ()
+                ),
+                [self.drive_subsystem]
+            )
+        )
+
+        self.configureButtonBindings()
 
     def configureButtonBindings(self):
         """
