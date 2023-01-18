@@ -38,19 +38,23 @@ class PhysicsEngine:
     def __init__(self, physics_controller: PhysicsInterface, robot: "MyRobot"):
 
         self.physics_controller = physics_controller
-        
-        self.motor_FrontLeft = robot.container.drive_subsystem.motor_FrontLeft
-        self.motor_RearLeft = robot.container.drive_subsystem.motor_RearLeft
-        self.motor_FrontRight = robot.container.drive_subsystem.motor_FrontRight
-        self.motor_RearRight = robot.container.drive_subsystem.motor_RearRight
+
+        self.motor_frontLeft = robot.container.drive_subsystem.motor_frontLeft
+        self.motor_rearLeft = robot.container.drive_subsystem.motor_rearLeft
+        self.motor_frontRight = robot.container.drive_subsystem.motor_frontRight
+        self.motor_rearRight = robot.container.drive_subsystem.motor_rearRight
 
         self.drivetrain = drivetrains.FourMotorDrivetrain()
 
-        self.tagz = robotpy_apriltag.loadAprilTagLayoutField(robotpy_apriltag.AprilTagField.k2023ChargedUp)
-        
+        self.tagz = robotpy_apriltag.loadAprilTagLayoutField(
+            robotpy_apriltag.AprilTagField.k2023ChargedUp
+        )
+
         for i in range(8):
-            self.physics_controller.field.getObject(f"tag{i+1}").setPose(self.tagz.getTagPose(i+1).toPose2d())
-        
+            self.physics_controller.field.getObject(f"tag{i+1}").setPose(
+                self.tagz.getTagPose(i + 1).toPose2d()
+            )
+
     def update_sim(self, now: float, tm_diff: float) -> None:
         """
         Called when the simulation parameters for the program need to be
@@ -61,10 +65,10 @@ class PhysicsEngine:
                         time that this function was called
         """
         speeds = self.drivetrain.calculate(
-            self.motor_FrontLeft.get(),
-            self.motor_RearLeft.get(),
-            self.motor_FrontRight.get(),
-            self.motor_RearRight.get()
+            self.motor_frontLeft.get(),
+            self.motor_rearLeft.get(),
+            self.motor_frontRight.get(),
+            self.motor_rearRight.get(),
         )
 
         self.physics_controller.drive(speeds, tm_diff)
