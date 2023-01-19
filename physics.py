@@ -44,7 +44,27 @@ class PhysicsEngine:
         self.motor_frontRight = robot.container.drive_subsystem.motor_frontRight
         self.motor_rearRight = robot.container.drive_subsystem.motor_rearRight
 
+        self.motor_frontLeftEncoder = (
+            robot.container.drive_subsystem.motor_frontLeftEncoder
+        )
+        self.motor_rearLeftEncoder = (
+            robot.container.drive_subsystem.motor_rearLeftEncoder
+        )
+        self.motor_frontRightEncoder = (
+            robot.container.drive_subsystem.motor_frontRightEncoder
+        )
+        self.motor_rearRightEncoder = (
+            robot.container.drive_subsystem.motor_rearRightEncoder
+        )
+
+        self.gyro = wpilib.simulation.ADIS16448_IMUSim(
+            robot.container.drive_subsystem.gyro
+        )
+
         self.drivetrain = drivetrains.FourMotorDrivetrain()
+
+        self.rightCounter = 0
+        self.leftCounter = 0
 
         self.tagz = robotpy_apriltag.loadAprilTagLayoutField(
             robotpy_apriltag.AprilTagField.k2023ChargedUp
@@ -69,6 +89,18 @@ class PhysicsEngine:
             self.motor_rearLeft.get(),
             self.motor_frontRight.get(),
             self.motor_rearRight.get(),
+        )
+
+        self.leftCounter += self.drivetrain.wheelSpeeds.left * tm_diff
+        self.rightCounter += self.drivetrain.wheelSpeeds.right * tm_diff
+
+        self.motor_frontLeftEncoder.setPosition(self.leftCounter)
+        self.motor_rearLeftEncoder.setPosition(self.leftCounter)
+        self.motor_frontRightEncoder.setPosition(self.rightCounter)
+        self.motor_rearRightEncoder.setPosition(self.rightCounter)
+
+        self.gyro.setGyroAngleZ(
+            -self.physics_controller.get_pose().rotation().degrees()
         )
 
         self.physics_controller.drive(speeds, tm_diff)
