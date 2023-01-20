@@ -9,7 +9,7 @@ class DriveConstants:
 
     kinematics = wpimath.kinematics.DifferentialDriveKinematics(kTrackWidth)
 
-    # TODO: These values are for example values only. When we assemble the chassis, we will need to change these. Also, the simulation will automatically adapt to these values.
+    # TODO: These are example values. When we assemble the chassis, we will need to change these. Also, the simulation will automatically adapt to these values.
     ksVolts = 0.22
     kvVoltSecondsPerMeter = 1.98
     kaVoltSecondsSquaredPerMeter = 0.2
