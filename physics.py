@@ -13,6 +13,8 @@ import wpilib.simulation
 import wpilib
 
 import wpimath.geometry
+import wpimath.system
+import wpimath.system.plant
 
 import robotpy_apriltag
 
@@ -21,6 +23,8 @@ from pyfrc.physics import motor_cfgs, tankmodel, drivetrains
 from pyfrc.physics.units import units
 
 from math import pi
+
+from constants import DriveConstants
 
 import typing
 
@@ -61,10 +65,16 @@ class PhysicsEngine:
             robot.container.drive_subsystem.gyro
         )
 
-        self.drivetrain = drivetrains.FourMotorDrivetrain()
+        self.system = wpimath.system.plant.LinearSystemId.identifyDrivetrainSystem(
+            DriveConstants.kvVoltSecondsPerMeter,
+            DriveConstants.kaVoltSecondsSquaredPerMeter,
+            DriveConstants.kvVoltSecondsPerRadian,
+            DriveConstants.kaVoltSecondsSquaredPerRadian,
+        )
 
-        self.rightCounter = 0
-        self.leftCounter = 0
+        self.drivetrain = wpilib.simulation.DifferentialDrivetrainSim(
+            self.system, 0.7, wpimath.system.plant.DCMotor.NEO(2), 10.71, 0.07
+        )
 
         self.tagz = robotpy_apriltag.loadAprilTagLayoutField(
             robotpy_apriltag.AprilTagField.k2023ChargedUp
@@ -84,23 +94,21 @@ class PhysicsEngine:
         :param tm_diff: The amount of time that has passed since the last
                         time that this function was called
         """
-        speeds = self.drivetrain.calculate(
-            self.motor_frontLeft.get(),
-            self.motor_rearLeft.get(),
-            self.motor_frontRight.get(),
-            self.motor_rearRight.get(),
+        self.drivetrain.setInputs(
+            self.motor_frontLeft.get() * 12, self.motor_frontRight.get() * 12
         )
+        self.drivetrain.update(tm_diff)
 
-        self.leftCounter += self.drivetrain.wheelSpeeds.left * tm_diff
-        self.rightCounter += self.drivetrain.wheelSpeeds.right * tm_diff
+        self.physics_controller.field.setRobotPose(self.drivetrain.getPose())
 
-        self.motor_frontLeftEncoder.setPosition(self.leftCounter)
-        self.motor_rearLeftEncoder.setPosition(self.leftCounter)
-        self.motor_frontRightEncoder.setPosition(self.rightCounter)
-        self.motor_rearRightEncoder.setPosition(self.rightCounter)
+        self.motor_frontLeftEncoder.setPosition(self.drivetrain.getLeftPosition())
+        self.motor_rearLeftEncoder.setPosition(self.drivetrain.getLeftPosition())
+        self.motor_frontRightEncoder.setPosition(self.drivetrain.getRightPosition())
+        self.motor_rearRightEncoder.setPosition(self.drivetrain.getRightPosition())
 
-        self.gyro.setGyroAngleZ(
-            -self.physics_controller.get_pose().rotation().degrees()
-        )
+        self.motor_frontLeft.setSimVelocity(self.drivetrain.getLeftVelocity())
+        self.motor_rearLeft.setSimVelocity(self.drivetrain.getLeftVelocity())
+        self.motor_frontRight.setSimVelocity(self.drivetrain.getRightVelocity())
+        self.motor_rearRight.setSimVelocity(self.drivetrain.getRightVelocity())
 
-        self.physics_controller.drive(speeds, tm_diff)
+        self.gyro.setGyroAngleZ(-self.drivetrain.getHeading().degrees())

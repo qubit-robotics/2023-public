@@ -24,7 +24,7 @@ class MyRobot(commands2.TimedCommandRobot):
 
         # Instantiate our RobotContainer.  This will perform all our button bindings, and put our
         # autonomous chooser on the dashboard.
-        self.container = RobotContainer()
+        self.container = RobotContainer(self)
 
     def disabledInit(self) -> None:
         """This function is called once each time the robot enters Disabled mode."""
@@ -37,6 +37,7 @@ class MyRobot(commands2.TimedCommandRobot):
         self.autonomousCommand = self.container.getAutonomousCommand()
 
         if self.autonomousCommand:
+            print("valid autonomous command")
             self.autonomousCommand.schedule()
 
     def autonomousPeriodic(self) -> None:
@@ -52,7 +53,7 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def teleopPeriodic(self) -> None:
         """This function is called periodically during operator control"""
-        print(self.container.drive_subsystem.getEstimatedPose())
+        print(self.container.drive_subsystem.getWheelSpeeds())
 
     def testInit(self) -> None:
         # Cancels all running commands at the start of test mode

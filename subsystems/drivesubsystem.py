@@ -5,24 +5,26 @@ import wpimath.geometry
 import wpimath.kinematics
 import commands2
 import rev
-
+import qlib.qsparkmax
 from constants import DriveConstants
 
 
 class DriveSubsystem(commands2.SubsystemBase):
-    def __init__(self) -> None:
+    def __init__(self, MyRobot: commands2.TimedCommandRobot) -> None:
         super().__init__()
 
-        self.motor_frontLeft = rev.CANSparkMax(
+        self.MyRobot = MyRobot
+
+        self.motor_frontLeft = qlib.qsparkmax.Qubit_CANSparkMax(
             1, rev.CANSparkMaxLowLevel.MotorType.kBrushless
         )
-        self.motor_rearLeft = rev.CANSparkMax(
+        self.motor_rearLeft = qlib.qsparkmax.Qubit_CANSparkMax(
             2, rev.CANSparkMaxLowLevel.MotorType.kBrushless
         )
-        self.motor_frontRight = rev.CANSparkMax(
+        self.motor_frontRight = qlib.qsparkmax.Qubit_CANSparkMax(
             3, rev.CANSparkMaxLowLevel.MotorType.kBrushless
         )
-        self.motor_rearRight = rev.CANSparkMax(
+        self.motor_rearRight = qlib.qsparkmax.Qubit_CANSparkMax(
             4, rev.CANSparkMaxLowLevel.MotorType.kBrushless
         )
 
@@ -35,9 +37,7 @@ class DriveSubsystem(commands2.SubsystemBase):
         self.gyro.calibrate()
         self.gyro.reset()
 
-        self.kinematics = wpimath.kinematics.DifferentialDriveKinematics(
-            DriveConstants.kTrackWidth
-        )
+        self.kinematics = DriveConstants.kinematics
         self.estimator = wpimath.estimator.DifferentialDrivePoseEstimator(
             self.kinematics,
             wpimath.geometry.Rotation2d.fromDegrees(-self.gyro.getAngle()),
@@ -55,7 +55,7 @@ class DriveSubsystem(commands2.SubsystemBase):
             self.motor_frontRight, self.motor_rearRight
         )
 
-        self.motor_rightGroup.setInverted(True)
+        # self.motor_rightGroup.setInverted(True)
 
         self.drivetrain = wpilib.drive.DifferentialDrive(
             self.motor_leftGroup, self.motor_rightGroup
@@ -63,6 +63,11 @@ class DriveSubsystem(commands2.SubsystemBase):
 
     def drive(self, x, z):
         self.drivetrain.arcadeDrive(x, z)
+
+    def voltDrive(self, leftVolts, rightVolts):
+        self.motor_leftGroup.setVoltage(leftVolts),
+        self.motor_rightGroup.setVoltage(rightVolts)
+        self.drivetrain.feed()
 
     def resetEncoders(self):
         self.motor_frontLeftEncoder.setPosition(0)
@@ -72,14 +77,12 @@ class DriveSubsystem(commands2.SubsystemBase):
 
     def getLeftGroupDistance(self):
         return (
-            self.motor_frontLeftEncoder.getPosition()
-            + self.motor_rearLeftEncoder.getPosition()
+            self.motor_frontLeftEncoder.getPosition() + self.motor_rearLeftEncoder.getPosition()
         ) / 2
 
     def getRightGroupDistance(self):
         return (
-            self.motor_frontRightEncoder.getPosition()
-            + self.motor_rearRightEncoder.getPosition()
+            self.motor_frontRightEncoder.getPosition() + self.motor_rearRightEncoder.getPosition()
         ) / 2
 
     def updateEstimator(self):
@@ -94,6 +97,19 @@ class DriveSubsystem(commands2.SubsystemBase):
         self.estimator.getEstimatedPosition() doesn't work, this is a crappy workaround.
         """
         return self.lastPose
+
+    def getWheelSpeeds(self):
+        if self.MyRobot.isSimulation():
+            speeds = wpimath.kinematics.DifferentialDriveWheelSpeeds(
+                (self.motor_frontLeft.getSimVelocity() + self.motor_rearLeft.getSimVelocity()) / 2,
+                (self.motor_frontRight.getSimVelocity() + self.motor_rearRight.getSimVelocity()) / 2,
+            )
+        else:
+            speeds = wpimath.kinematics.DifferentialDriveWheelSpeeds(
+                (self.motor_frontLeftEncoder.getVelocity() + self.motor_rearLeftEncoder.getVelocity()) / 2,
+                (self.motor_frontRightEncoder.getVelocity() + self.motor_rearRightEncoder.getVelocity()) / 2,
+            )
+        return speeds
 
     def periodic(self) -> None:
         """

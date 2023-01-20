@@ -1,10 +1,9 @@
-import wpilib
-
 import commands2
 import commands2.button
 import commands2.cmd
 
 from subsystems.drivesubsystem import DriveSubsystem
+from commands.ramsete import PathCommand
 
 
 class RobotContainer:
@@ -15,8 +14,10 @@ class RobotContainer:
     subsystems, commands, and button mappings) should be declared here.
     """
 
-    def __init__(self) -> None:
-        self.drive_subsystem = DriveSubsystem()
+    def __init__(self, MyRobot) -> None:
+        self.drive_subsystem = DriveSubsystem(MyRobot)
+
+        self.pathCommand = PathCommand(self.drive_subsystem)
 
         self.driver_controller = commands2.button.CommandJoystick(0)
 
@@ -40,4 +41,4 @@ class RobotContainer:
         pass
 
     def getAutonomousCommand(self) -> commands2.Command:
-        return None
+        return self.pathCommand.getRamseteCommand()

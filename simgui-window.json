@@ -6,15 +6,15 @@
       "style": "0",
       "userScale": "2",
       "width": "1280",
-      "xpos": "50",
-      "ypos": "114"
+      "xpos": "100",
+      "ypos": "164"
     }
   },
   "Window": {
     "###/SmartDashboard/Field": {
       "Collapsed": "0",
-      "Pos": "293,75",
-      "Size": "690,530"
+      "Pos": "200,200",
+      "Size": "400,200"
     },
     "###FMS": {
       "Collapsed": "0",
@@ -28,7 +28,7 @@
     },
     "###NetworkTables": {
       "Collapsed": "0",
-      "Pos": "250,277",
+      "Pos": "247,143",
       "Size": "750,185"
     },
     "###Other Devices": {
