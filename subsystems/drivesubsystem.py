@@ -95,6 +95,8 @@ class DriveSubsystem(commands2.SubsystemBase):
         """
         return self.lastPose
 
-    def defCommand(self, x, z):
-        self.drive(x, z)
+    def periodic(self) -> None:
+        """
+        wpilib calls this periodically, using this is much better than the previous method
+        """
         self.updateEstimator()

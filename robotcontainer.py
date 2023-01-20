@@ -22,7 +22,7 @@ class RobotContainer:
 
         self.drive_subsystem.setDefaultCommand(
             commands2.cmd.run(
-                lambda: self.drive_subsystem.defCommand(
+                lambda: self.drive_subsystem.drive(
                     self.driver_controller.getX(), self.driver_controller.getZ()
                 ),
                 [self.drive_subsystem],
