@@ -1,8 +1,11 @@
 import commands2
 import commands2.button
 import commands2.cmd
+import wpilib
+import photonvision
 
 from subsystems.drivesubsystem import DriveSubsystem
+from subsystems.camsubsytem import CamSubsystem
 from commands.ramsete import PathCommand
 
 
@@ -15,7 +18,10 @@ class RobotContainer:
     """
 
     def __init__(self, MyRobot) -> None:
-        self.drive_subsystem = DriveSubsystem(MyRobot)
+
+        self.cam_subsystem = CamSubsystem()
+
+        self.drive_subsystem = DriveSubsystem(MyRobot, self.cam_subsystem)
 
         self.pathCommand = PathCommand(self.drive_subsystem)
 

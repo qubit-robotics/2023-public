@@ -9,6 +9,7 @@ class DriveConstants:
 
     kinematics = wpimath.kinematics.DifferentialDriveKinematics(kTrackWidth)
 
+    #Constants related to pathplanning
     # TODO: These are example values. When we assemble the chassis, we will need to change these. Also, the simulation will automatically adapt to these values.
     ksVolts = 0.22
     kvVoltSecondsPerMeter = 1.98
@@ -22,3 +23,11 @@ class DriveConstants:
     kMaxAccelerationMetersPerSecondSquared = 3
 
     kMaxVoltsRamsete = 10
+
+class SimCameraConstants:
+
+    camDiagFOV = 67.5 #degrees
+    camToRobot = wpimath.geometry.Transform3d() #camera position relative to the center of the chassis, 
+    camResolutionWidth = 416 #pixels
+    camResolutionHeight = 480 #pixels
+    minTargetArea = 500 #pixels^2, TODO: we will tinker with this on the real robot. Don't think we need to have massive detection distance, more fps will work better.
