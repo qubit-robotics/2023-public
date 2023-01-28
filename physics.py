@@ -18,13 +18,15 @@ import wpimath.system.plant
 
 import robotpy_apriltag
 
+import photonvision
+
 from pyfrc.physics.core import PhysicsInterface
 from pyfrc.physics import motor_cfgs, tankmodel, drivetrains
 from pyfrc.physics.units import units
 
 from math import pi
 
-from constants import DriveConstants
+from constants import DriveConstants, SimCameraConstants
 
 import typing
 
@@ -38,6 +40,19 @@ class PhysicsEngine:
     one on each end of the track. Obviously, this is not particularly
     realistic, but it's good enough to illustrate the point
     """
+
+    # Since we use exec() to create SimVisionTarget objects, intelliSense wouldn't see their inner methods/fields without us referencing them here first.
+    # a dict definitely isn't mandatory, but using a for loop is much more cleaner than creating every tag one by one.
+    tag = {
+        "tag1": photonvision.SimVisionTarget,
+        "tag2": photonvision.SimVisionTarget,
+        "tag3": photonvision.SimVisionTarget,
+        "tag4": photonvision.SimVisionTarget,
+        "tag5": photonvision.SimVisionTarget,
+        "tag6": photonvision.SimVisionTarget,
+        "tag7": photonvision.SimVisionTarget,
+        "tag8": photonvision.SimVisionTarget
+    }
 
     def __init__(self, physics_controller: PhysicsInterface, robot: "MyRobot"):
 
@@ -76,14 +91,27 @@ class PhysicsEngine:
             self.system, 0.7, wpimath.system.plant.DCMotor.NEO(2), 10.71, 0.07
         )
 
-        self.tagz = robotpy_apriltag.loadAprilTagLayoutField(
+        self.tagLayout = robotpy_apriltag.loadAprilTagLayoutField(
             robotpy_apriltag.AprilTagField.k2023ChargedUp
         )
 
+        self.cam = photonvision.SimVisionSystem(
+            "camera",
+            SimCameraConstants.camDiagFOV,
+            SimCameraConstants.camToRobot,
+            9000, # check the docstring, aprilTags does not rely on leds.
+            SimCameraConstants.camResolutionWidth,
+            SimCameraConstants.camResolutionHeight,
+            SimCameraConstants.minTargetArea
+        )
+
+        # Create the aprilTags' fieldObject2d, SimVisionTarget objects; add SimVisionTargets to SimVisionSystem
         for i in range(8):
             self.physics_controller.field.getObject(f"tag{i+1}").setPose(
-                self.tagz.getTagPose(i + 1).toPose2d()
+                self.tagLayout.getTagPose(i + 1).toPose2d()
             )
+            self.tag[f"tag{i+1}"] = photonvision.SimVisionTarget(self.tagLayout.getTagPose(i+1), 0.15, 0.36, i+1)
+            self.cam.addSimVisionTarget(self.tag[f"tag{i+1}"])
 
     def update_sim(self, now: float, tm_diff: float) -> None:
         """
@@ -100,6 +128,8 @@ class PhysicsEngine:
         self.drivetrain.update(tm_diff)
 
         self.physics_controller.field.setRobotPose(self.drivetrain.getPose())
+
+        self.cam.processFrame(self.physics_controller.get_pose())
 
         self.motor_frontLeftEncoder.setPosition(self.drivetrain.getLeftPosition())
         self.motor_rearLeftEncoder.setPosition(self.drivetrain.getLeftPosition())

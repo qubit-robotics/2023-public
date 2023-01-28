@@ -6,14 +6,21 @@ import wpimath.kinematics
 import commands2
 import rev
 import qlib.qsparkmax
+
+from subsystems.camsubsytem import CamSubsystem
+
 from constants import DriveConstants
 
 
 class DriveSubsystem(commands2.SubsystemBase):
-    def __init__(self, MyRobot: commands2.TimedCommandRobot) -> None:
+    def __init__(self, MyRobot: commands2.TimedCommandRobot, cam_subsystem: CamSubsystem) -> None:
         super().__init__()
 
         self.MyRobot = MyRobot
+        self.cam_subsystem = cam_subsystem
+
+        self.timer = wpilib.Timer()
+        self.timer.start()
 
         self.motor_frontLeft = qlib.qsparkmax.Qubit_CANSparkMax(
             1, rev.CANSparkMaxLowLevel.MotorType.kBrushless
@@ -46,6 +53,7 @@ class DriveSubsystem(commands2.SubsystemBase):
             DriveConstants.kStartingPose,
         )
         self.lastPose = DriveConstants.kStartingPose
+        self.last_camEstimatedPose = wpimath.geometry.Pose3d()
 
         self.motor_leftGroup = wpilib.MotorControllerGroup(
             self.motor_frontLeft, self.motor_rearLeft
@@ -91,6 +99,14 @@ class DriveSubsystem(commands2.SubsystemBase):
             self.getLeftGroupDistance(),
             self.getRightGroupDistance(),
         )
+
+        camEstimatedPose, timestampLatencySeconds = self.cam_subsystem.getEstimatedGlobalPose(self.lastPose)
+
+        if self.last_camEstimatedPose != camEstimatedPose:
+            self.estimator.addVisionMeasurement(
+                camEstimatedPose.toPose2d(), self.timer.getFPGATimestamp() - timestampLatencySeconds
+            )
+            self.last_camEstimatedPose = camEstimatedPose
 
     def getEstimatedPose(self):
         """
