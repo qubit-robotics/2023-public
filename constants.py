@@ -24,6 +24,12 @@ class DriveConstants:
 
     kMaxVoltsRamsete = 10
 
+    #PID Constants for auto balancing on the charge station.
+    # TODO: These values should be thoroughly tested, stuff below are example values.
+    kPBalance = 0.03
+    kIBalance = 0
+    kDBalance = 0
+
 class SimCameraConstants:
 
     camDiagFOV = 67.5 #degrees

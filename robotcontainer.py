@@ -7,6 +7,7 @@ import photonvision
 from subsystems.drivesubsystem import DriveSubsystem
 from subsystems.camsubsytem import CamSubsystem
 from commands.ramsete import PathCommand
+from commands.balancechargestation import BalanceChargeStation
 
 
 class RobotContainer:
@@ -20,10 +21,10 @@ class RobotContainer:
     def __init__(self, MyRobot) -> None:
 
         self.cam_subsystem = CamSubsystem()
-
         self.drive_subsystem = DriveSubsystem(MyRobot, self.cam_subsystem)
 
         self.pathCommand = PathCommand(self.drive_subsystem)
+        self.balanceCommand = BalanceChargeStation(self.drive_subsystem)
 
         self.driver_controller = commands2.button.CommandJoystick(0)
 
@@ -44,7 +45,7 @@ class RobotContainer:
         instantiating a :GenericHID or one of its subclasses (Joystick or XboxController),
         and then passing it to a JoystickButton.
         """
-        pass
+        self.driver_controller.button(1).whileTrue(self.balanceCommand)
 
     def getAutonomousCommand(self) -> commands2.Command:
         return self.pathCommand.getRamseteCommand()
