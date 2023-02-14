@@ -6,6 +6,7 @@ import photonvision
 
 from subsystems.drivesubsystem import DriveSubsystem
 from subsystems.camsubsytem import CamSubsystem
+from subsystems.armsubsystem import ArmSubsystem
 from commands.ramsete import PathCommand
 from commands.balancechargestation import BalanceChargeStation
 
@@ -22,6 +23,7 @@ class RobotContainer:
 
         self.cam_subsystem = CamSubsystem()
         self.drive_subsystem = DriveSubsystem(MyRobot, self.cam_subsystem)
+        self.arm_subsystem = ArmSubsystem()
 
         self.pathCommand = PathCommand(self.drive_subsystem)
         self.balanceCommand = BalanceChargeStation(self.drive_subsystem)
@@ -37,6 +39,12 @@ class RobotContainer:
             ),
         )
 
+        self.arm_subsystem.setDefaultCommand(
+            commands2.cmd.run(
+                lambda: self.arm_subsystem.hold(), [self.arm_subsystem]
+            )
+        )
+
         self.configureButtonBindings()
 
     def configureButtonBindings(self):
@@ -46,6 +54,24 @@ class RobotContainer:
         and then passing it to a JoystickButton.
         """
         self.driver_controller.button(1).whileTrue(self.balanceCommand)
+
+        self.driver_controller.button(2).whileTrue(
+            commands2.cmd.run(
+                lambda: self.arm_subsystem.swallow(), [self.arm_subsystem]
+            )
+        )
+
+        self.driver_controller.button(3).whileTrue(
+            commands2.cmd.run(
+                lambda: self.arm_subsystem.spit(), [self.arm_subsystem]
+            )
+        )
+
+        self.driver_controller.button(4).toggleOnTrue(
+            commands2.cmd.runOnce(
+                lambda: self.arm_subsystem.changeMode(), [self.arm_subsystem]
+            )
+        )
 
     def getAutonomousCommand(self) -> commands2.Command:
         return self.pathCommand.getRamseteCommand()
