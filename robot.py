@@ -42,6 +42,7 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def autonomousPeriodic(self) -> None:
         """This function is called periodically during autonomous"""
+        print(self.container.drive_subsystem.getWheelSpeeds())
 
     def teleopInit(self) -> None:
         # This makes sure that the autonomous stops running when

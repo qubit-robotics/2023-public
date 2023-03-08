@@ -7,8 +7,13 @@ import photonvision
 from subsystems.drivesubsystem import DriveSubsystem
 from subsystems.camsubsytem import CamSubsystem
 from subsystems.armsubsystem import ArmSubsystem
+
+from hud.autonchooser import AutonChooser
+
 from commands.ramsete import PathCommand
 from commands.balancechargestation import BalanceChargeStation
+
+from autos.toprowandbalance import TopRowAndBalance
 
 
 class RobotContainer:
@@ -25,7 +30,8 @@ class RobotContainer:
         self.drive_subsystem = DriveSubsystem(MyRobot, self.cam_subsystem)
         self.arm_subsystem = ArmSubsystem()
 
-        self.pathCommand = PathCommand(self.drive_subsystem)
+        self.auton_chooser = AutonChooser()
+
         self.balanceCommand = BalanceChargeStation(self.drive_subsystem)
 
         self.driver_controller = commands2.button.CommandJoystick(0)
@@ -74,4 +80,5 @@ class RobotContainer:
         )
 
     def getAutonomousCommand(self) -> commands2.Command:
-        return self.pathCommand.getRamseteCommand()
+        # return PathCommand(self.drive_subsystem, self.autonchooser.generatePath()).getRamseteCommand()
+        return TopRowAndBalance(self.drive_subsystem, self.auton_chooser)
