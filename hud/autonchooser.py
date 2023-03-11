@@ -22,6 +22,9 @@ class AutonChooser(commands2.SubsystemBase):
 
         self.tagchooser.setDefaultOption("None Selected", None)
         self.mobilitychooser.setDefaultOption("None Selected", None)
+
+        self.last_tagchoice = None
+        self.last_mobilitychoice = None
     
         SmartDashboard.putData("tagchooser", self.tagchooser)
         SmartDashboard.putData("mobilitychooser", self.mobilitychooser)
@@ -30,13 +33,24 @@ class AutonChooser(commands2.SubsystemBase):
         """
         Returns: Trajectory object that can be passed to RamseteCommand. 
         """
-        tagchoice = self.tagchooser.getSelected()
-        mobilitychoice = self.mobilitychooser.getSelected()
+        self.tagchoice = self.tagchooser.getSelected()
+        self.last_tagchoice = self.last_tagchoice
 
-        if ((tagchoice != None) and (mobilitychoice != None)):
-            return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson(f"paths/output/tagid{tagchoice}{mobilitychoice}")
+        self.mobilitychoice = self.mobilitychooser.getSelected()
+        self.last_mobilitychoice = self.mobilitychoice
+
+        if ((self.tagchoice != None) and (self.mobilitychoice != None)):
+            return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson(f"paths/output/tagid{self.tagchoice}{self.mobilitychoice}")
         
         else:
-            #TODO: make a failsafe path
+            #TODO: How can we implement a failsafe path?
             return wpimath.trajectory.Trajectory()
-
+        
+    def hasModeChanged(self) -> bool:
+        """
+        Returns: Whether the mode has been changed at some point after the last generatePath call.
+        """
+        if (self.tagchooser.getSelected() != self.last_tagchoice) or (self.mobilitychooser.getSelected() != self.last_mobilitychoice):
+            return True
+        else:
+            return False

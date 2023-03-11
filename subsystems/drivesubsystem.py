@@ -3,11 +3,13 @@ import wpilib.drive
 import wpimath.estimator
 import wpimath.geometry
 import wpimath.kinematics
+import wpimath.trajectory
 import commands2
 import rev
 import qlib.qsparkmax
 
 from subsystems.camsubsytem import CamSubsystem
+from hud.autonchooser import AutonChooser
 
 from constants import DriveConstants
 
@@ -54,6 +56,9 @@ class DriveSubsystem(commands2.SubsystemBase):
         )
         self.lastPose = DriveConstants.kStartingPose
         self.last_camEstimatedPose = wpimath.geometry.Pose3d()
+
+        self.field = wpilib.Field2d()
+        wpilib.SmartDashboard.putData("estimatorField", self.field)
 
         self.motor_leftGroup = wpilib.MotorControllerGroup(
             self.motor_frontLeft, self.motor_rearLeft
@@ -108,6 +113,8 @@ class DriveSubsystem(commands2.SubsystemBase):
             )
             self.last_camEstimatedPose = camEstimatedPose
 
+        self.field.setRobotPose(self.estimator.getEstimatedPosition())
+
     def getEstimatedPose(self):
         """
         self.estimator.getEstimatedPosition() doesn't work, this is a crappy workaround.
@@ -126,6 +133,23 @@ class DriveSubsystem(commands2.SubsystemBase):
                 (self.motor_frontRightEncoder.getVelocity() + self.motor_rearRightEncoder.getVelocity()) / 2,
             )
         return speeds
+
+    def setStartingPose(self, auton_chooser: AutonChooser):
+        """
+        Set the starting position through the Shuffleboard at the start of the match.
+
+        @param1: AutonChooser HUD element
+        """
+        trajectory = auton_chooser.generatePath()
+        trajectory_initial= trajectory.initialPose()
+        
+        if trajectory_initial != wpimath.trajectory.Trajectory():
+            self.estimator.resetPosition(
+                wpimath.geometry.Rotation2d.fromDegrees(-self.gyro.getAngle()),
+                0,
+                0,
+                trajectory_initial
+            )
 
     def periodic(self) -> None:
         """
