@@ -9,6 +9,7 @@ from subsystems.camsubsytem import CamSubsystem
 from subsystems.armsubsystem import ArmSubsystem
 
 from hud.autonchooser import AutonChooser
+from hud.inrange import InRange
 
 from commands.ramsete import PathCommand
 from commands.balancechargestation import BalanceChargeStation
@@ -31,6 +32,7 @@ class RobotContainer:
         self.arm_subsystem = ArmSubsystem()
 
         self.auton_chooser = AutonChooser()
+        self.inrange = InRange(self.drive_subsystem)
 
         self.balanceCommand = BalanceChargeStation(self.drive_subsystem)
 
