@@ -34,6 +34,9 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def autonomousInit(self) -> None:
         """This autonomous runs the autonomous command selected by your RobotContainer class."""
+
+        self.container.drive_subsystem.setStartingPose(self.container.auton_chooser)
+
         self.autonomousCommand = self.container.getAutonomousCommand()
 
         if self.autonomousCommand:
@@ -42,6 +45,7 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def autonomousPeriodic(self) -> None:
         """This function is called periodically during autonomous"""
+        print(self.container.drive_subsystem.getWheelSpeeds())
 
     def teleopInit(self) -> None:
         # This makes sure that the autonomous stops running when
@@ -53,7 +57,8 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def teleopPeriodic(self) -> None:
         """This function is called periodically during operator control"""
-        print(self.container.drive_subsystem.getWheelSpeeds())
+        # print(self.container.arm_subsystem.motor_gripper.getMotorOutputPercent())
+        pass
 
     def testInit(self) -> None:
         # Cancels all running commands at the start of test mode

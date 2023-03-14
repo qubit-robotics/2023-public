@@ -15,6 +15,7 @@ import wpilib
 import wpimath.geometry
 import wpimath.system
 import wpimath.system.plant
+import wpimath.trajectory
 
 import robotpy_apriltag
 
@@ -55,6 +56,8 @@ class PhysicsEngine:
     }
 
     def __init__(self, physics_controller: PhysicsInterface, robot: "MyRobot"):
+
+        self.robot = robot
 
         self.physics_controller = physics_controller
 
@@ -112,6 +115,9 @@ class PhysicsEngine:
             )
             self.tag[f"tag{i+1}"] = photonvision.SimVisionTarget(self.tagLayout.getTagPose(i+1), 0.15, 0.36, i+1)
             self.cam.addSimVisionTarget(self.tag[f"tag{i+1}"])
+        
+        self.robot_AutonChooser = robot.container.auton_chooser
+        self.last_path = robot.container.auton_chooser.generatePath()
 
     def update_sim(self, now: float, tm_diff: float) -> None:
         """
@@ -122,6 +128,14 @@ class PhysicsEngine:
         :param tm_diff: The amount of time that has passed since the last
                         time that this function was called
         """
+
+        path = self.robot_AutonChooser.generatePath()
+        self.physics_controller.field
+
+        if path != self.last_path:
+            self.drivetrain.setPose(path.initialPose())
+            self.last_path = path
+
         self.drivetrain.setInputs(
             self.motor_frontLeft.get() * 12, self.motor_frontRight.get() * 12
         )

@@ -1,8 +1,27 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "ADIS16448[4]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [1]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/BalanceChargeStationPID": "PIDController",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/camera Sim Field": "Field2d",
+      "/SmartDashboard/estimatorField": "Field2d",
+      "/SmartDashboard/mobilitychooser": "String Chooser",
+      "/SmartDashboard/tagchooser": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Field": {
