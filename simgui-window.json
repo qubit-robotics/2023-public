@@ -5,13 +5,13 @@
   "MainWindow": {
     "GLOBAL": {
       "fps": "120",
-      "height": "720",
-      "maximized": "0",
+      "height": "705",
+      "maximized": "1",
       "style": "0",
       "userScale": "2",
-      "width": "1280",
-      "xpos": "100",
-      "ypos": "164"
+      "width": "1366",
+      "xpos": "0",
+      "ypos": "23"
     }
   },
   "Window": {
@@ -36,8 +36,8 @@
       "Size": "300,555"
     },
     "###NetworkTables": {
-      "Collapsed": "0",
-      "Pos": "247,143",
+      "Collapsed": "1",
+      "Pos": "261,54",
       "Size": "750,185"
     },
     "###Other Devices": {

@@ -1,5 +1,6 @@
 import commands2
 import ctre
+import rev
 import enum
 from wpilib import SmartDashboard
 
@@ -19,7 +20,7 @@ class ArmSubsystem(commands2.SubsystemBase):
     def __init__(self):
         super().__init__()
 
-        self.motor_gripper = ctre.WPI_VictorSPX(5)
+        self.motor_gripper = rev.CANSparkMax(5, rev.CANSparkMax.MotorType.kBrushless)
 
         # Start with the cube as default mode
         #TODO: Change this to incorperate SendableChooser
