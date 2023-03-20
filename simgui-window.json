@@ -5,20 +5,20 @@
   "MainWindow": {
     "GLOBAL": {
       "fps": "120",
-      "height": "705",
-      "maximized": "1",
+      "height": "1017",
+      "maximized": "0",
       "style": "0",
       "userScale": "2",
-      "width": "1366",
-      "xpos": "0",
-      "ypos": "23"
+      "width": "1920",
+      "xpos": "802",
+      "ypos": "85"
     }
   },
   "Window": {
     "###/SmartDashboard/Field": {
       "Collapsed": "0",
-      "Pos": "432,99",
-      "Size": "400,446"
+      "Pos": "286,99",
+      "Size": "546,200"
     },
     "###FMS": {
       "Collapsed": "0",
@@ -36,7 +36,7 @@
       "Size": "300,555"
     },
     "###NetworkTables": {
-      "Collapsed": "1",
+      "Collapsed": "0",
       "Pos": "261,54",
       "Size": "750,185"
     },

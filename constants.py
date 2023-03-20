@@ -4,23 +4,23 @@ import wpimath.kinematics
 
 class DriveConstants:
 
-    kTrackWidth = 0.7
+    kTrackWidth = 0.66
     kStartingPose = wpimath.geometry.Pose2d()
 
     kinematics = wpimath.kinematics.DifferentialDriveKinematics(kTrackWidth)
 
     #Constants related to pathplanning
     # TODO: These are example values. When we assemble the chassis, we will need to change these. Also, the simulation will automatically adapt to these values.
-    ksVolts = 0.22
-    kvVoltSecondsPerMeter = 1.98
-    kaVoltSecondsSquaredPerMeter = 0.2
-    kvVoltSecondsPerRadian = 1.5
-    kaVoltSecondsSquaredPerRadian = 0.3
+    ksVolts = 0.13
+    kvVoltSecondsPerMeter = 2.88
+    kaVoltSecondsSquaredPerMeter = 0.10
+    kvVoltSecondsPerRadian = 2.89
+    kaVoltSecondsSquaredPerRadian = 0.06
 
-    kPDriveVel = 8.5
+    kPDriveVel = 0.1
 
-    kMaxSpeedMetersPerSecond = 3
-    kMaxAccelerationMetersPerSecondSquared = 3
+    kMaxSpeedMetersPerSecond = 1
+    kMaxAccelerationMetersPerSecondSquared = 1
 
     kMaxVoltsRamsete = 10
 

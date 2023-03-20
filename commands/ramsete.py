@@ -42,15 +42,15 @@ class PathCommand:
             wpimath.geometry.Translation2d(x=3, y=0), wpimath.geometry.Rotation2d(0)
         )
 
-        # self.exampleTrajectory = (
-        #     wpimath.trajectory.TrajectoryGenerator.generateTrajectory(
-        #         self.initialPosition, self.movements, self.finalPosition, self.config
-        #     )
-        # )
+        self.exampleTrajectory = (
+            wpimath.trajectory.TrajectoryGenerator.generateTrajectory(
+                self.initialPosition, self.movements, self.finalPosition, self.config
+            )
+        )
         self.trajectory = path
 
         self.ramseteCommand = commands2.RamseteCommand(
-            self.trajectory,
+            self.exampleTrajectory,
             drive_subsystem.getEstimatedPose,
             wpimath.controller.RamseteController(b=2, zeta=0.7),
             wpimath.controller.SimpleMotorFeedforwardMeters(

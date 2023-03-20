@@ -42,6 +42,16 @@ class DriveSubsystem(commands2.SubsystemBase):
         self.motor_frontRightEncoder = self.motor_frontRight.getEncoder()
         self.motor_rearRightEncoder = self.motor_rearRight.getEncoder()
 
+        self.motor_frontLeftEncoder.setPositionConversionFactor(0.0446812324929972)
+        self.motor_frontLeftEncoder.setVelocityConversionFactor(0.0446812324929972)
+        self.motor_rearLeftEncoder.setPositionConversionFactor(0.0446812324929972)
+        self.motor_rearLeftEncoder.setVelocityConversionFactor(0.0446812324929972)
+        self.motor_frontRightEncoder.setPositionConversionFactor(0.0446812324929972)
+        self.motor_frontRightEncoder.setVelocityConversionFactor(0.0446812324929972)
+        self.motor_rearRightEncoder.setPositionConversionFactor(0.0446812324929972)
+        self.motor_rearRightEncoder.setVelocityConversionFactor(0.0446812324929972)
+
+
         self.gyro = wpilib.ADIS16448_IMU()
         self.gyro.calibrate()
         self.gyro.reset()
@@ -141,9 +151,9 @@ class DriveSubsystem(commands2.SubsystemBase):
         @param1: AutonChooser HUD element
         """
         trajectory = auton_chooser.generatePath()
-        trajectory_initial= trajectory.initialPose()
         
-        if trajectory_initial != wpimath.trajectory.Trajectory():
+        if trajectory != wpimath.trajectory.Trajectory():
+            trajectory_initial= trajectory.initialPose()
             self.estimator.resetPosition(
                 wpimath.geometry.Rotation2d.fromDegrees(-self.gyro.getAngle()),
                 0,

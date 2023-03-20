@@ -43,7 +43,6 @@ class AutonChooser(commands2.SubsystemBase):
             return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson(f"paths/output/tagid{self.tagchoice}{self.mobilitychoice}")
         
         else:
-            #TODO: How can we implement a failsafe path?
             return wpimath.trajectory.Trajectory()
         
     def hasModeChanged(self) -> bool:
