@@ -1,8 +1,8 @@
 import commands2
 import ctre
+import rev
 import enum
 from wpilib import SmartDashboard
-
 from ctre import ControlMode
 
 class Mode(enum.auto):
@@ -19,7 +19,7 @@ class ArmSubsystem(commands2.SubsystemBase):
     def __init__(self):
         super().__init__()
 
-        self.motor_gripper = ctre.WPI_VictorSPX(5)
+        self.motor_gripper = rev.CANSparkMax(5, rev.CANSparkMax.MotorType.kBrushless)
 
         # Start with the cube as default mode
         #TODO: Change this to incorperate SendableChooser
@@ -29,6 +29,7 @@ class ArmSubsystem(commands2.SubsystemBase):
         if self.curr_mode == Mode.CUBE:
             self.curr_mode = Mode.CONE
             self.motor_gripper.setInverted(True)
+        
         else:
             self.curr_mode = Mode.CUBE
             self.motor_gripper.setInverted(False)
@@ -38,6 +39,7 @@ class ArmSubsystem(commands2.SubsystemBase):
         if self.curr_mode == Mode.CONE:
             SmartDashboard.putBoolean(Mode.CONE, True)
             SmartDashboard.putBoolean(Mode.CUBE, False)
+            
         elif self.curr_mode == Mode.CUBE:
             SmartDashboard.putBoolean(Mode.CONE, False)
             SmartDashboard.putBoolean(Mode.CUBE, True)

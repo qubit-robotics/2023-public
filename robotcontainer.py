@@ -9,6 +9,7 @@ from subsystems.camsubsytem import CamSubsystem
 from subsystems.armsubsystem import ArmSubsystem
 
 from hud.autonchooser import AutonChooser
+from hud.inrange import InRange
 
 from commands.ramsete import PathCommand
 from commands.balancechargestation import BalanceChargeStation
@@ -31,6 +32,7 @@ class RobotContainer:
         self.arm_subsystem = ArmSubsystem()
 
         self.auton_chooser = AutonChooser()
+        self.inrange = InRange(self.drive_subsystem)
 
         self.balanceCommand = BalanceChargeStation(self.drive_subsystem)
 
@@ -39,7 +41,7 @@ class RobotContainer:
         self.drive_subsystem.setDefaultCommand(
             commands2.cmd.run(
                 lambda: self.drive_subsystem.drive(
-                    self.driver_controller.getX(), self.driver_controller.getZ()
+                    -self.driver_controller.getY(), -self.driver_controller.getZ()
                 ),
                 [self.drive_subsystem],
             ),
@@ -76,6 +78,12 @@ class RobotContainer:
         self.driver_controller.button(4).toggleOnTrue(
             commands2.cmd.runOnce(
                 lambda: self.arm_subsystem.changeMode(), [self.arm_subsystem]
+            )
+        )
+
+        self.driver_controller.button(5).whileTrue(
+            commands2.cmd.run(
+                lambda: self.drive_subsystem.resetEncodersAndGyro(), [self.drive_subsystem]
             )
         )
 
