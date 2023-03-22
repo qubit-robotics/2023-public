@@ -35,11 +35,10 @@ class PathCommand:
 
         self.movements = [
             wpimath.geometry.Translation2d(x=1, y=1),
-            wpimath.geometry.Translation2d(x=2, y=-1),
         ]
 
         self.finalPosition = wpimath.geometry.Pose2d(
-            wpimath.geometry.Translation2d(x=3, y=0), wpimath.geometry.Rotation2d(0)
+            wpimath.geometry.Translation2d(x=2, y=-1), wpimath.geometry.Rotation2d(0)
         )
 
         self.exampleTrajectory = (

@@ -81,6 +81,12 @@ class RobotContainer:
             )
         )
 
+        self.driver_controller.button(5).whileTrue(
+            commands2.cmd.run(
+                lambda: self.drive_subsystem.resetEncodersAndGyro(), [self.drive_subsystem]
+            )
+        )
+
     def getAutonomousCommand(self) -> commands2.Command:
         # return PathCommand(self.drive_subsystem, self.autonchooser.generatePath()).getRamseteCommand()
         return TopRowAndBalance(self.drive_subsystem, self.auton_chooser)

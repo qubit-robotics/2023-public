@@ -2,11 +2,9 @@
 
 import typing
 import wpilib
-import commands2
-
 from robotcontainer import RobotContainer
-
-
+import time
+import commands2
 class MyRobot(commands2.TimedCommandRobot):
     """
     Our default robot class, pass it to wpilib.run
@@ -58,8 +56,8 @@ class MyRobot(commands2.TimedCommandRobot):
     def teleopPeriodic(self) -> None:
         """This function is called periodically during operator control"""
         # print(self.container.arm_subsystem.motor_gripper.getMotorOutputPercent())
-        print(self.container.drive_subsystem.getLeftGroupDistance(), "left")
-        print(self.container.drive_subsystem.getRightGroupDistance(), "right")
+        self.container.balanceCommand.periodic()
+        print(self.container.drive_subsystem.gyro.getGyroAngleY())
 
     def testInit(self) -> None:
         # Cancels all running commands at the start of test mode

@@ -92,11 +92,13 @@ class DriveSubsystem(commands2.SubsystemBase):
         self.motor_rightGroup.setVoltage(rightVolts)
         self.drivetrain.feed()
 
-    def resetEncoders(self):
+    def resetEncodersAndGyro(self):
         self.motor_frontLeftEncoder.setPosition(0)
         self.motor_rearLeftEncoder.setPosition(0)
         self.motor_frontRightEncoder.setPosition(0)
         self.motor_rearRightEncoder.setPosition(0)
+
+        self.gyro.reset()
 
     def getLeftGroupDistance(self):
         return (
