@@ -37,6 +37,7 @@ class RobotContainer:
         self.balanceCommand = BalanceChargeStation(self.drive_subsystem)
 
         self.driver_controller = commands2.button.CommandJoystick(0)
+        self.operator_controller = commands2.button.CommandJoystick(1)
 
         self.drive_subsystem.setDefaultCommand(
             commands2.cmd.run(
@@ -45,12 +46,6 @@ class RobotContainer:
                 ),
                 [self.drive_subsystem],
             ),
-        )
-
-        self.arm_subsystem.setDefaultCommand(
-            commands2.cmd.run(
-                lambda: self.arm_subsystem.hold(), [self.arm_subsystem]
-            )
         )
 
         self.configureButtonBindings()
@@ -83,9 +78,58 @@ class RobotContainer:
 
         self.driver_controller.button(5).whileTrue(
             commands2.cmd.run(
-                lambda: self.drive_subsystem.resetEncodersAndGyro(), [self.drive_subsystem]
+                lambda: self.arm_subsystem.stopIntake(), [self.arm_subsystem]
             )
         )
+
+        self.operator_controller.button(1).whileTrue(
+            commands2.cmd.run(
+                lambda: self.arm_subsystem.topRow(), [self.arm_subsystem]
+            )
+        )
+
+        self.operator_controller.button(2).whileTrue(
+            commands2.cmd.run(
+                lambda: self.arm_subsystem.midRow(), [self.arm_subsystem]
+            )
+        )
+
+        self.operator_controller.button(3).whileTrue(
+            commands2.cmd.run(
+                lambda: self.arm_subsystem.retract(), [self.arm_subsystem]
+            )
+        )
+
+        self.operator_controller.button(4).toggleOnTrue(
+            commands2.cmd.runOnce(
+                lambda: self.arm_subsystem.enable()
+            )
+        )
+
+        self.operator_controller.button(5).toggleOnTrue(
+            commands2.cmd.runOnce(
+                lambda: self.arm_subsystem.disable()
+            )
+        )
+
+        self.operator_controller.button(6).whileTrue(
+            commands2.cmd.runOnce(
+                lambda: self.arm_subsystem.raiseArmManual()
+            )
+        )
+
+        self.operator_controller.button(7).whileTrue(
+            commands2.cmd.runOnce(
+                lambda: self.arm_subsystem.retractArmManual()
+            )
+        )
+
+        self.operator_controller.button(8).whileTrue(
+            commands2.cmd.runOnce(
+                lambda: self.arm_subsystem.stopArmManual()
+            )
+        )
+
 
     def getAutonomousCommand(self) -> commands2.Command:
         # return PathCommand(self.drive_subsystem, self.autonchooser.generatePath()).getRamseteCommand()

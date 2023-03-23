@@ -55,10 +55,8 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def teleopPeriodic(self) -> None:
         """This function is called periodically during operator control"""
-        # print(self.container.arm_subsystem.motor_gripper.getMotorOutputPercent())
         self.container.balanceCommand.periodic()
-        print(self.container.drive_subsystem.gyro.getGyroAngleY())
-
+        
     def testInit(self) -> None:
         # Cancels all running commands at the start of test mode
         commands2.CommandScheduler.getInstance().cancelAll()

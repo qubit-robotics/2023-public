@@ -38,5 +38,3 @@ class BalanceChargeStation(commands2.PIDCommand):
 
         if wpilib.Preferences.getFloat("kD", 0) != self.getController().getD():
             self._controller.setD(wpilib.Preferences.getFloat("kD", 0))
-
-        print("output", self.getController().calculate(self.drive_subsystem.gyro.getGyroAngleY()))           

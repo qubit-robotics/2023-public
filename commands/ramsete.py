@@ -49,7 +49,7 @@ class PathCommand:
         self.trajectory = path
 
         self.ramseteCommand = commands2.RamseteCommand(
-            self.exampleTrajectory,
+            self.trajectory,
             drive_subsystem.getEstimatedPose,
             wpimath.controller.RamseteController(b=2, zeta=0.7),
             wpimath.controller.SimpleMotorFeedforwardMeters(

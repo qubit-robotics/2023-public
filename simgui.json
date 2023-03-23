@@ -26,6 +26,7 @@
       "/LiveWindow/Ungrouped/class frc2::SubsystemBase": "Subsystem",
       "/SmartDashboard/BalanceChargeStationPID": "PIDController",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/armControlPID": "PIDController",
       "/SmartDashboard/camera Sim Field": "Field2d",
       "/SmartDashboard/estimatorField": "Field2d",
       "/SmartDashboard/mobilitychooser": "String Chooser",
