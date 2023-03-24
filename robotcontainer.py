@@ -11,6 +11,8 @@ from subsystems.armsubsystem import ArmSubsystem
 from hud.autonchooser import AutonChooser
 from hud.inrange import InRange
 
+from qlib.POVBindings import POVBindings
+
 from commands.ramsete import PathCommand
 from commands.balancechargestation import BalanceChargeStation
 
@@ -32,7 +34,7 @@ class RobotContainer:
         self.arm_subsystem = ArmSubsystem()
 
         self.auton_chooser = AutonChooser()
-        self.inrange = InRange(self.drive_subsystem)
+        # self.inrange = InRange(self.drive_subsystem)
 
         self.balanceCommand = BalanceChargeStation(self.drive_subsystem)
 
@@ -56,81 +58,86 @@ class RobotContainer:
         instantiating a :GenericHID or one of its subclasses (Joystick or XboxController),
         and then passing it to a JoystickButton.
         """
-        self.driver_controller.button(1).whileTrue(self.balanceCommand)
+        # self.driver_controller.button(1).whileTrue(self.balanceCommand)
 
-        self.driver_controller.button(2).whileTrue(
+        self.operator_controller.button(2).whileTrue(
             commands2.cmd.run(
                 lambda: self.arm_subsystem.swallow(), [self.arm_subsystem]
             )
         )
 
-        self.driver_controller.button(3).whileTrue(
+        self.operator_controller.button(1).whileTrue(
             commands2.cmd.run(
                 lambda: self.arm_subsystem.spit(), [self.arm_subsystem]
             )
         )
 
-        self.driver_controller.button(4).toggleOnTrue(
+        self.operator_controller.button(4).toggleOnTrue(
             commands2.cmd.runOnce(
                 lambda: self.arm_subsystem.changeMode(), [self.arm_subsystem]
             )
         )
 
-        self.driver_controller.button(5).whileTrue(
+        self.operator_controller.button(3).whileTrue(
             commands2.cmd.run(
                 lambda: self.arm_subsystem.stopIntake(), [self.arm_subsystem]
             )
         )
 
-        self.operator_controller.button(1).whileTrue(
+        self.operator_controller.button(8).whileTrue(
             commands2.cmd.run(
                 lambda: self.arm_subsystem.topRow(), [self.arm_subsystem]
             )
         )
 
-        self.operator_controller.button(2).whileTrue(
+        self.operator_controller.button(10).whileTrue(
             commands2.cmd.run(
                 lambda: self.arm_subsystem.midRow(), [self.arm_subsystem]
             )
         )
 
-        self.operator_controller.button(3).whileTrue(
+        self.operator_controller.button(12).whileTrue(
             commands2.cmd.run(
                 lambda: self.arm_subsystem.retract(), [self.arm_subsystem]
             )
         )
 
-        self.operator_controller.button(4).toggleOnTrue(
-            commands2.cmd.runOnce(
-                lambda: self.arm_subsystem.enable()
+        self.operator_controller.button(7).whileTrue(                                                        
+            commands2.cmd.run(
+                lambda: self.arm_subsystem.humanPlayer(), [self.arm_subsystem]
             )
         )
 
-        self.operator_controller.button(5).toggleOnTrue(
-            commands2.cmd.runOnce(
-                lambda: self.arm_subsystem.disable()
+        commands2.Trigger(condition= lambda: POVBindings.POVUpBinding(self.operator_controller.getPOV())).whileTrue(
+            commands2.cmd.run(
+                lambda: self.arm_subsystem.raiseArmManual(), [self.arm_subsystem]
+            ).beforeStarting(
+                lambda: self.arm_subsystem.disable(), [self.arm_subsystem]
+            )
+        )
+
+        commands2.Trigger(condition= lambda: POVBindings.POVDownBinding(self.operator_controller.getPOV())).whileTrue(
+            commands2.cmd.run(
+                lambda: self.arm_subsystem.retractArmManual(), [self.arm_subsystem]
+            ).beforeStarting(
+                lambda: self.arm_subsystem.disable(), [self.arm_subsystem]
             )
         )
 
         self.operator_controller.button(6).whileTrue(
-            commands2.cmd.runOnce(
-                lambda: self.arm_subsystem.raiseArmManual()
+            commands2.cmd.run(
+                lambda: self.arm_subsystem.stopArmManual(), [self.arm_subsystem]
+            ).beforeStarting(
+                lambda: self.arm_subsystem.disable(), [self.arm_subsystem]
             )
         )
 
-        self.operator_controller.button(7).whileTrue(
+        self.operator_controller.button(5).whileTrue(
             commands2.cmd.runOnce(
-                lambda: self.arm_subsystem.retractArmManual()
+                lambda: self.arm_subsystem.enable(), [self.arm_subsystem]
             )
         )
-
-        self.operator_controller.button(8).whileTrue(
-            commands2.cmd.runOnce(
-                lambda: self.arm_subsystem.stopArmManual()
-            )
-        )
-
 
     def getAutonomousCommand(self) -> commands2.Command:
-        # return PathCommand(self.drive_subsystem, self.autonchooser.generatePath()).getRamseteCommand()
-        return TopRowAndBalance(self.drive_subsystem, self.auton_chooser)
+        return PathCommand(self.drive_subsystem, self.auton_chooser.generatePath()).getRamseteCommand()
+        # return TopRowAndBalance(self.drive_subsystem, self.auton_chooser)
