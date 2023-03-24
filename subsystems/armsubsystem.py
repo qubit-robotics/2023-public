@@ -127,7 +127,6 @@ class ArmSubsystem(commands2.PIDSubsystem):
     #             rev.CANSparkMax.SoftLimitDirection.kForward,
     #             self.motor_angleEncoder.getPosition()
     #         )
-    #         self.motor_angle.set(0)
     #     else:
     #         SmartDashboard.putBoolean("ForwardLimit", False)
 
@@ -138,6 +137,5 @@ class ArmSubsystem(commands2.PIDSubsystem):
     #             rev.CANSparkMax.SoftLimitDirection.kReverse,
     #             self.motor_angleEncoder.getPosition()
     #         )
-    #         self.motor_angle.set(0)
     #     else:
     #         SmartDashboard.putBoolean("BackwardsLimit", False)
