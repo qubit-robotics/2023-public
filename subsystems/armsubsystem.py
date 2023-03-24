@@ -67,7 +67,7 @@ class ArmSubsystem(commands2.PIDSubsystem):
         self.setSetpoint(0.8)
     
     def retract(self):
-        self.setSetpoint(0)
+        self.setSetpoint(-0.2)
     
     def humanPlayer(self):
         self.setSetpoint(1.4)

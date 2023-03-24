@@ -43,7 +43,12 @@ class AutonChooser(commands2.SubsystemBase):
             return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson(f"paths/output/tagid{self.tagchoice}{self.mobilitychoice}")
         
         else:
-            return wpimath.trajectory.Trajectory()
+            if wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kBlue:
+                return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson("paths/output/failsafe_blue.wpilib.json")
+            elif wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kRed:
+                return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson("paths/output/failsafe_red.wpilib.json")
+            else:
+                return wpimath.trajectory.Trajectory()
         
     def hasModeChanged(self) -> bool:
         """
