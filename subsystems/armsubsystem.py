@@ -64,13 +64,13 @@ class ArmSubsystem(commands2.PIDSubsystem):
         self.setSetpoint(1.6)
     
     def midRow(self):
-        self.setSetpoint(0.8)
+        self.setSetpoint(1)
     
     def retract(self):
         self.setSetpoint(0)
     
     def humanPlayer(self):
-        self.setSetpoint(1.4)
+        self.setSetpoint(1.3)
 
     def _getMeasurement(self) -> float:
         SmartDashboard.putNumber("armPidPos", self.motor_angleEncoder.getPosition())

@@ -40,7 +40,9 @@ class AutonChooser(commands2.SubsystemBase):
         self.last_mobilitychoice = self.mobilitychoice
 
         if ((self.tagchoice != None) and (self.mobilitychoice != None)):
-            return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson(f"paths/output/tagid{self.tagchoice}{self.mobilitychoice}")
+            pathDir = f"/paths/output/tagid{self.tagchoice}{self.mobilitychoice}"
+            resolved = wpilib.getDeployDirectory() + pathDir
+            return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson(resolved)
         
         else:
             return wpimath.trajectory.Trajectory()
