@@ -19,7 +19,7 @@ class DriveConstants:
 
     kPDriveVel = 0.01
 
-    kMaxSpeedMetersPerSecond = 2
+    kMaxSpeedMetersPerSecond = 1
     kMaxAccelerationMetersPerSecondSquared = 1
 
     kMaxVoltsRamsete = 10

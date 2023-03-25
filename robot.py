@@ -55,6 +55,9 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def teleopPeriodic(self) -> None:
         """This function is called periodically during operator control"""
+        print(self.container.drive_subsystem.getLeftGroupDistance(), "left")
+        print(self.container.drive_subsystem.getRightGroupDistance(), "right")
+        print(self.container.drive_subsystem)
         self.container.balanceCommand.periodic()
         
     def testInit(self) -> None:

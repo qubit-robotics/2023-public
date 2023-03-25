@@ -78,6 +78,7 @@ class DriveSubsystem(commands2.SubsystemBase):
             self.motor_frontRight, self.motor_rearRight
         )
 
+        # self.motor_leftGroup.setInverted(True)
         # self.motor_rightGroup.setInverted(True)
 
         self.drivetrain = wpilib.drive.DifferentialDrive(
