@@ -15,13 +15,13 @@ class BalanceChargeStation(commands2.CommandBase):
 
         self.gyro = self.drive_subsystem.gyro
     
-    def periodic(self) -> None:
-        print("periodic balance")
+    def execute(self) -> None:
         print(self.gyro.getGyroAngleY())
         if self.gyro.getGyroAngleY() > 5:
-            self.drive_subsystem.drive(-1)
+            self.drive_subsystem.drive(1, 0)
         elif self.gyro.getGyroAngleY() < -5:
-            self.drive_subsystem.drive(-1)
+            self.drive_subsystem.drive(-1, 0)
         else:
             self.end(True)
+        super().execute()
         
