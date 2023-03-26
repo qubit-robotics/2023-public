@@ -139,5 +139,5 @@ class RobotContainer:
         )
 
     def getAutonomousCommand(self) -> commands2.Command:
-        return PathCommand(self.drive_subsystem, self.auton_chooser.generatePath()).getRamseteCommand()
-        # return TopRowAndBalance(self.drive_subsystem, self.auton_chooser)
+        # return PathCommand(self.drive_subsystem, self.auton_chooser.generatePath()).getRamseteCommand()
+        return TopRowAndBalance(self.drive_subsystem, self.arm_subsystem,self.auton_chooser)

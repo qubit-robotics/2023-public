@@ -4,17 +4,19 @@ import commands2.cmd
 from hud.autonchooser import AutonChooser
 
 from subsystems.drivesubsystem import DriveSubsystem
+from subsystems.armsubsystem import ArmSubsystem
 
 from commands.ramsete import PathCommand
 from commands.balancechargestation import BalanceChargeStation
+from commands.dropgamepieceauto import DropGamePieceAuto
 
 class TopRowAndBalance(commands2.SequentialCommandGroup):
 
-    def __init__(self, drive_subsystem: DriveSubsystem, auton_chooser: AutonChooser):
+    def __init__(self, drive_subsystem: DriveSubsystem, arm_subsystem: ArmSubsystem, auton_chooser: AutonChooser):
         super().__init__()
         self.addCommands(
             [
-            #TODO: Drop a single game piece command
+            DropGamePieceAuto(arm_subsystem),
             PathCommand(drive_subsystem, auton_chooser.generatePath()).getRamseteCommand(),
             BalanceChargeStation(drive_subsystem)
             ]
