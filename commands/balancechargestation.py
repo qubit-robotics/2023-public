@@ -1,27 +1,29 @@
 import commands2
+import commands2.cmd
 import wpimath.controller
 import wpilib
 from subsystems.drivesubsystem import DriveSubsystem
 
 from constants import DriveConstants
 
-class BalanceChargeStation(commands2.CommandBase):
+class BalanceChargeStation:
 
     def __init__(self, drive_subsystem: DriveSubsystem):
-        super().__init__()
-        super().addRequirements([drive_subsystem])
-
         self.drive_subsystem = drive_subsystem
 
-        self.gyro = self.drive_subsystem.gyro
-    
-    def execute(self) -> None:
-        print(self.gyro.getGyroAngleY())
-        if self.gyro.getGyroAngleY() > 5:
-            self.drive_subsystem.drive(1, 0)
-        elif self.gyro.getGyroAngleY() < -5:
-            self.drive_subsystem.drive(-1, 0)
+    def balancePeriodic(self):
+        if self.drive_subsystem.gyro.getGyroAngleY() < -7:
+            self.drive_subsystem.voltDrive(-1.5, -1.5)
+        elif self.drive_subsystem.gyro.getGyroAngleY() > 7:
+            self.drive_subsystem.voltDrive(1.5, 1.5)
         else:
-            self.end(True)
-        super().execute()
+            self.drive_subsystem.drive(0, 0)
+
+    def getCommand(self):
+        return commands2.RepeatCommand(
+            commands2.cmd.run(
+            lambda: self.balancePeriodic(), [self.drive_subsystem]
+            )
+        )
+    
         

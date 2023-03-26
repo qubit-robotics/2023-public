@@ -18,6 +18,6 @@ class TopRowAndBalance(commands2.SequentialCommandGroup):
             [
             DropGamePieceAuto(arm_subsystem, drive_subsystem),
             PathCommand(drive_subsystem, auton_chooser.generatePath()).getRamseteCommand(),
-            BalanceChargeStation(drive_subsystem)
+            BalanceChargeStation(drive_subsystem).getCommand()
             ]
         )

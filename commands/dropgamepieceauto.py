@@ -27,6 +27,14 @@ class DropGamePieceAuto(commands2.SequentialCommandGroup):
 
         self.waitForSpit = commands2.WaitCommand(0.5)
 
+        self.backupCommand = commands2.cmd.runOnce(lambda: self.drive_subsystem.voltDrive(-4, -4), [self.drive_subsystem])
+
+        self.waitForBackup = commands2.WaitCommand(0.5)
+
+        self.stopCommand = commands2.cmd.runOnce(
+            lambda: self.drive_subsystem.drive(0, 0), [self.drive_subsystem]
+        )
+
         self.stopIntakeCommand = commands2.cmd.runOnce(
             lambda: self.arm_subsystem.stopIntake(), [self.arm_subsystem]
         )
@@ -45,6 +53,9 @@ class DropGamePieceAuto(commands2.SequentialCommandGroup):
             self.waitForSpit,
             self.stopIntakeCommand,
             self.retractCommand,
-            self.waitForRetract
+            self.waitForRetract,
+            self.backupCommand,
+            self.waitForBackup,
+            self.stopCommand
         )
 

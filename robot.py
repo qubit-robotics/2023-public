@@ -58,7 +58,6 @@ class MyRobot(commands2.TimedCommandRobot):
         print(self.container.drive_subsystem.getLeftGroupDistance(), "left")
         print(self.container.drive_subsystem.getRightGroupDistance(), "right")
         print(self.container.arm_subsystem.motor_angleEncoder.getPosition())
-        self.container.balanceCommand.periodic()
         
     def testInit(self) -> None:
         # Cancels all running commands at the start of test mode
