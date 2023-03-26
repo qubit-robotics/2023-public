@@ -5,20 +5,20 @@
   "MainWindow": {
     "GLOBAL": {
       "fps": "120",
-      "height": "1016",
-      "maximized": "1",
+      "height": "1346",
+      "maximized": "0",
       "style": "0",
       "userScale": "2",
-      "width": "1920",
-      "xpos": "0",
-      "ypos": "64"
+      "width": "2560",
+      "xpos": "-408",
+      "ypos": "608"
     }
   },
   "Window": {
     "###/SmartDashboard/Field": {
       "Collapsed": "0",
-      "Pos": "580,104",
-      "Size": "453,801"
+      "Pos": "303,104",
+      "Size": "730,559"
     },
     "###FMS": {
       "Collapsed": "0",

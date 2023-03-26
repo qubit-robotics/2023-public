@@ -5,36 +5,23 @@ from subsystems.drivesubsystem import DriveSubsystem
 
 from constants import DriveConstants
 
-class BalanceChargeStation(commands2.PIDCommand):
+class BalanceChargeStation(commands2.CommandBase):
 
     def __init__(self, drive_subsystem: DriveSubsystem):
+        super().__init__()
+        super().addRequirements([drive_subsystem])
+
         self.drive_subsystem = drive_subsystem
-        super().__init__(
-            wpimath.controller.PIDController(
-                DriveConstants.kPBalance, DriveConstants.kIBalance, DriveConstants.kDBalance
-            ),
-            lambda: drive_subsystem.gyro.getGyroAngleY(),
-            0,
-            lambda volts: self.drive_subsystem.voltDrive(volts, volts),
-            [drive_subsystem]
-        )
-        self.getController().setTolerance(5)
-        wpilib.SmartDashboard.putData("BalanceChargeStationPID", self.getController())
 
-        wpilib.Preferences.initFloat("kP", 0)
-        wpilib.Preferences.initFloat("kI", 0)
-        wpilib.Preferences.initFloat("kD", 0)
-
-    def atSetpoint(self) -> bool:
-        return self.getController().atSetpoint()
-
-    def periodic(self):
-
-        if wpilib.Preferences.getFloat("kP", 0) != self.getController().getP():
-            self._controller.setP(wpilib.Preferences.getFloat("kP", 0))
+        self.gyro = self.drive_subsystem.gyro
+    
+    def periodic(self) -> None:
+        print("periodic balance")
+        print(self.gyro.getGyroAngleY())
+        if self.gyro.getGyroAngleY() > 5:
+            self.drive_subsystem.drive(-1)
+        elif self.gyro.getGyroAngleY() < -5:
+            self.drive_subsystem.drive(-1)
+        else:
+            self.end(True)
         
-        if wpilib.Preferences.getFloat("kI", 0) != self.getController().getI():
-            self._controller.setI(wpilib.Preferences.getFloat("kI", 0))
-
-        if wpilib.Preferences.getFloat("kD", 0) != self.getController().getD():
-            self._controller.setD(wpilib.Preferences.getFloat("kD", 0))

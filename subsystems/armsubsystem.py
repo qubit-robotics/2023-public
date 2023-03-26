@@ -5,16 +5,15 @@ import enum
 import wpimath.controller
 import wpilib
 from wpilib import SmartDashboard
-from ctre import ControlMode
 
-class Mode(enum.auto):
+class Mode:
     CUBE = "cube"
     CONE = "cone"
 
-class PWR(enum.auto):
-    HOLD = 0.2
-    SWALLOW = 0.5
-    SPIT = -0.3
+class PWR:
+    STOP = 0
+    SWALLOW = 1
+    SPIT = -1
 
 class ArmSubsystem(commands2.PIDSubsystem):
 
@@ -28,7 +27,8 @@ class ArmSubsystem(commands2.PIDSubsystem):
             0
         )
 
-        self.motor_gripper = wpilib.PWMSparkMax(3)
+        self.motor_gripper = wpilib.PWMSparkMax(9)
+        self.motor_gripper.setInverted(False)
         self.motor_angle = rev.CANSparkMax(10, rev.CANSparkMax.MotorType.kBrushless)
         self.motor_angleEncoder = self.motor_angle.getEncoder()
 
@@ -38,25 +38,29 @@ class ArmSubsystem(commands2.PIDSubsystem):
 
         # Start with the cube as default mode
         #TODO: Change this to incorperate SendableChooser
-        self.curr_mode = Mode.CUBE
+        self.currGripperMode = Mode.CUBE
+        self.currGripperPWR = PWR.STOP
 
     def changeMode(self):
         print("mode changed")
-        if self.curr_mode == Mode.CUBE:
-            self.curr_mode = Mode.CONE
+        if self.currGripperMode == Mode.CUBE:
+            self.currGripperMode = Mode.CONE
             self.motor_gripper.setInverted(True)
-        
+            # self.motor_gripper.set(self.currGripperPWR)
+
         else:
-            self.curr_mode = Mode.CUBE
+            self.currGripperMode = Mode.CUBE
             self.motor_gripper.setInverted(False)
+            # self.motor_gripper.set(self.currGripperPWR)
+
         self.updateHUD()
     
     def updateHUD(self) -> None:
-        if self.curr_mode == Mode.CONE:
+        if self.currGripperMode == Mode.CONE:
             SmartDashboard.putBoolean(Mode.CONE, True)
             SmartDashboard.putBoolean(Mode.CUBE, False)
             
-        elif self.curr_mode == Mode.CUBE:
+        elif self.currGripperMode == Mode.CUBE:
             SmartDashboard.putBoolean(Mode.CONE, False)
             SmartDashboard.putBoolean(Mode.CUBE, True)
 
@@ -78,7 +82,7 @@ class ArmSubsystem(commands2.PIDSubsystem):
         return self.motor_angleEncoder.getPosition()
     
     def _useOutput(self, output: float, setpoint: float) -> None:
-        print("there is armpid active")
+        print("output voltage", output)
         self.motor_angle.setVoltage(output)
 
         SmartDashboard.putNumber("armPidOut", output)
@@ -104,24 +108,23 @@ class ArmSubsystem(commands2.PIDSubsystem):
     def stopArmManual(self):
         print("manual stop")
         self.motor_angle.set(0)
- 
-    def hold(self):
-       self.motor_gripper.set(PWR.HOLD)
     
     def spit(self):
         print("spitting")
-        self.motor_gripper.set(1)
+        self.currGripperPWR = PWR.SPIT
     
     def swallow(self):
         print("swallowing")
-        self.motor_gripper.set(-1)
+        self.currGripperPWR = PWR.SWALLOW
     
     def stopIntake(self):
         print("no intake power")
-        self.motor_gripper.set(0)
+        self.currGripperPWR = PWR.STOP
     
-    # def periodic(self) -> None:
-    #     if self.motor_angleForwardLimit.get():
+    def periodic(self) -> None:
+        self.motor_gripper.set(self.currGripperPWR)
+        super().periodic()
+    # #     if self.motor_angleForwardLimit.get():
     #         SmartDashboard.putBoolean("ForwardLimit", True)
     #         self.motor_angle.setSoftLimit(
     #             rev.CANSparkMax.SoftLimitDirection.kForward,

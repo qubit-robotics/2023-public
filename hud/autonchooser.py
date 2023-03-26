@@ -19,6 +19,7 @@ class AutonChooser(commands2.SubsystemBase):
         self.mobilitychooser = wpilib.SendableChooser()
         self.mobilitychooser.addOption("No", "_no_mobility.wpilib.json")
         self.mobilitychooser.addOption("YES!", "_mobility.wpilib.json")
+        self.mobilitychooser.addOption("No Station", "_no_station.wpilib.json")
 
         self.tagchooser.setDefaultOption("None Selected", None)
         self.mobilitychooser.setDefaultOption("None Selected", None)
@@ -40,15 +41,15 @@ class AutonChooser(commands2.SubsystemBase):
         self.last_mobilitychoice = self.mobilitychoice
 
         if ((self.tagchoice != None) and (self.mobilitychoice != None)):
-            pathDir = f"/paths/output/tagid{self.tagchoice}{self.mobilitychoice}"
+            pathDir = f"/output/tagid{self.tagchoice}{self.mobilitychoice}"
             resolved = wpilib.getDeployDirectory() + pathDir
             return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson(resolved)
         
         else:
             if wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kBlue:
-                return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson("paths/output/failsafe_blue.wpilib.json")
+                return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson(wpilib.getDeployDirectory() + "/output/failsafe_blue.wpilib.json")
             elif wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kRed:
-                return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson("paths/output/failsafe_red.wpilib.json")
+                return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson(wpilib.getDeployDirectory() + "/output/failsafe_red.wpilib.json")
             else:
                 return wpimath.trajectory.Trajectory()
         

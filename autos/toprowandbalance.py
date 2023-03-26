@@ -16,7 +16,7 @@ class TopRowAndBalance(commands2.SequentialCommandGroup):
         super().__init__()
         self.addCommands(
             [
-            DropGamePieceAuto(arm_subsystem),
+            DropGamePieceAuto(arm_subsystem, drive_subsystem),
             PathCommand(drive_subsystem, auton_chooser.generatePath()).getRamseteCommand(),
             BalanceChargeStation(drive_subsystem)
             ]
