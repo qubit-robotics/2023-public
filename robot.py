@@ -5,6 +5,7 @@ import wpilib
 from robotcontainer import RobotContainer
 import time
 import commands2
+from wpilib import AddressableLED
 class MyRobot(commands2.TimedCommandRobot):
     """
     Our default robot class, pass it to wpilib.run
@@ -29,14 +30,12 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def disabledPeriodic(self) -> None:
         """This function is called periodically when disabled"""
-
     def autonomousInit(self) -> None:
         """This autonomous runs the autonomous command selected by your RobotContainer class."""
 
         self.container.drive_subsystem.setStartingPose(self.container.auton_chooser)
 
         self.autonomousCommand = self.container.getAutonomousCommand()
-
         if self.autonomousCommand:
             print("valid autonomous command")
             self.autonomousCommand.schedule()
@@ -55,7 +54,9 @@ class MyRobot(commands2.TimedCommandRobot):
 
     def teleopPeriodic(self) -> None:
         """This function is called periodically during operator control"""
-        self.container.balanceCommand.periodic()
+        print(self.container.drive_subsystem.getLeftGroupDistance(), "left")
+        print(self.container.drive_subsystem.getRightGroupDistance(), "right")
+        print(self.container.arm_subsystem.motor_angleEncoder.getPosition())
         
     def testInit(self) -> None:
         # Cancels all running commands at the start of test mode

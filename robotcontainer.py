@@ -3,10 +3,12 @@ import commands2.button
 import commands2.cmd
 import wpilib
 import photonvision
-
+from wpilib import AddressableLED
 from subsystems.drivesubsystem import DriveSubsystem
 from subsystems.camsubsytem import CamSubsystem
 from subsystems.armsubsystem import ArmSubsystem
+from subsystems.grippersubsystem import GripperSubsystem
+from subsystems.ledsubsystem import LedSubsystem
 
 from hud.autonchooser import AutonChooser
 from hud.inrange import InRange
@@ -18,7 +20,6 @@ from commands.balancechargestation import BalanceChargeStation
 
 from autos.toprowandbalance import TopRowAndBalance
 
-
 class RobotContainer:
     """
     This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -28,13 +29,14 @@ class RobotContainer:
     """
 
     def __init__(self, MyRobot) -> None:
-
         self.cam_subsystem = CamSubsystem()
         self.drive_subsystem = DriveSubsystem(MyRobot, self.cam_subsystem)
         self.arm_subsystem = ArmSubsystem()
+        self.gripper_subsystem = GripperSubsystem()
+        self.led_subsystem = LedSubsystem()
 
         self.auton_chooser = AutonChooser()
-        # self.inrange = InRange(self.drive_subsystem)
+        #self.inrange = InRange(self.drive_subsystem)
 
         self.balanceCommand = BalanceChargeStation(self.drive_subsystem)
 
@@ -44,10 +46,16 @@ class RobotContainer:
         self.drive_subsystem.setDefaultCommand(
             commands2.cmd.run(
                 lambda: self.drive_subsystem.drive(
-                    -self.driver_controller.getY(), -self.driver_controller.getZ()
+                    -self.driver_controller.getY(), -self.driver_controller.getZ(), self.driver_controller.getRawButton(2)
                 ),
                 [self.drive_subsystem],
             ),
+        )
+
+        self.led_subsystem.setDefaultCommand(
+            commands2.cmd.run(
+                lambda: self.led_subsystem.setRainbow(), [self.led_subsystem]
+            )
         )
 
         self.configureButtonBindings()
@@ -58,29 +66,29 @@ class RobotContainer:
         instantiating a :GenericHID or one of its subclasses (Joystick or XboxController),
         and then passing it to a JoystickButton.
         """
-        # self.driver_controller.button(1).whileTrue(self.balanceCommand)
+        self.driver_controller.button(1).toggleOnTrue(self.balanceCommand.getCommand())
 
         self.operator_controller.button(2).whileTrue(
             commands2.cmd.run(
-                lambda: self.arm_subsystem.swallow(), [self.arm_subsystem]
+                lambda: self.gripper_subsystem.swallow(), [self.gripper_subsystem]
             )
         )
 
         self.operator_controller.button(1).whileTrue(
             commands2.cmd.run(
-                lambda: self.arm_subsystem.spit(), [self.arm_subsystem]
+                lambda: self.gripper_subsystem.spit(), [self.gripper_subsystem]
             )
         )
 
         self.operator_controller.button(4).toggleOnTrue(
             commands2.cmd.runOnce(
-                lambda: self.arm_subsystem.changeMode(), [self.arm_subsystem]
+                lambda: self.gripper_subsystem.changeMode(), [self.gripper_subsystem]
             )
         )
 
         self.operator_controller.button(3).whileTrue(
             commands2.cmd.run(
-                lambda: self.arm_subsystem.stopIntake(), [self.arm_subsystem]
+                lambda: self.gripper_subsystem.stopIntake(), [self.gripper_subsystem]
             )
         )
 
@@ -104,7 +112,13 @@ class RobotContainer:
 
         self.operator_controller.button(7).whileTrue(                                                        
             commands2.cmd.run(
-                lambda: self.arm_subsystem.humanPlayer(), [self.arm_subsystem]
+                lambda: self.arm_subsystem.humanPlayerCube(), [self.arm_subsystem]
+            )
+        )
+
+        self.operator_controller.button(9).whileTrue(
+            commands2.cmd.runOnce(
+                lambda: self.arm_subsystem.humanPlayerCone(), [self.arm_subsystem]
             )
         )
 
@@ -139,5 +153,6 @@ class RobotContainer:
         )
 
     def getAutonomousCommand(self) -> commands2.Command:
-        # return PathCommand(self.drive_subsystem, self.auton_chooser.generatePath()).getRamseteCommand()
-        return TopRowAndBalance(self.drive_subsystem, self.arm_subsystem,self.auton_chooser)
+        #return PathCommand(self.drive_subsystem, self.auton_chooser.generatePath()).getRamseteCommand()
+        return TopRowAndBalance(self.drive_subsystem, self.arm_subsystem, self.gripper_subsystem,self.auton_chooser)
+        #return commands2.Command()

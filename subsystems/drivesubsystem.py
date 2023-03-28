@@ -4,6 +4,7 @@ import wpimath.estimator
 import wpimath.geometry
 import wpimath.kinematics
 import wpimath.trajectory
+import wpimath.filter
 import commands2
 import rev
 import qlib.qsparkmax
@@ -36,6 +37,9 @@ class DriveSubsystem(commands2.SubsystemBase):
         self.motor_rearRight = qlib.qsparkmax.Qubit_CANSparkMax(
             4, rev.CANSparkMaxLowLevel.MotorType.kBrushless
         )
+
+        self.slewRateLimiterX = wpimath.filter.SlewRateLimiter(1)
+        self.slewRateLimiterZ = wpimath.filter.SlewRateLimiter(1)
 
         self.motor_frontLeftEncoder = self.motor_frontLeft.getEncoder()
         self.motor_rearLeftEncoder = self.motor_rearLeft.getEncoder()
@@ -78,14 +82,22 @@ class DriveSubsystem(commands2.SubsystemBase):
             self.motor_frontRight, self.motor_rearRight
         )
 
+        # self.motor_leftGroup.setInverted(True)
         # self.motor_rightGroup.setInverted(True)
 
         self.drivetrain = wpilib.drive.DifferentialDrive(
             self.motor_leftGroup, self.motor_rightGroup
         )
 
-    def drive(self, x, z):
-        self.drivetrain.arcadeDrive(x, z)
+    def drive(self, x, z, noSlew= False):
+        if noSlew:
+            self.drivetrain.arcadeDrive(
+                x / 2, z / 2
+            )
+        else:
+            self.drivetrain.arcadeDrive(
+                self.slewRateLimiterX.calculate(x), self.slewRateLimiterZ.calculate(z)
+            )
 
     def voltDrive(self, leftVolts, rightVolts):
         self.motor_leftGroup.setVoltage(leftVolts),
