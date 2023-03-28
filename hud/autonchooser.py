@@ -2,6 +2,7 @@ import commands2
 import wpilib
 from wpilib import SmartDashboard
 import wpimath.trajectory
+import wpimath.geometry
 
 class AutonChooser(commands2.SubsystemBase):
 
@@ -21,8 +22,12 @@ class AutonChooser(commands2.SubsystemBase):
         self.mobilitychooser.addOption("YES!", "_mobility.wpilib.json")
         self.mobilitychooser.addOption("No Station", "_no_station.wpilib.json")
 
+        self.taxiBackwardsChooser = wpilib.SendableChooser()
+        self.taxiBackwardsChooser.addOption("Yes", True)
+
         self.tagchooser.setDefaultOption("None Selected", None)
         self.mobilitychooser.setDefaultOption("None Selected", None)
+        self.taxiBackwardsChooser.setDefaultOption("No", False)
 
         self.last_tagchoice = None
         self.last_mobilitychoice = None
@@ -40,11 +45,13 @@ class AutonChooser(commands2.SubsystemBase):
         self.mobilitychoice = self.mobilitychooser.getSelected()
         self.last_mobilitychoice = self.mobilitychoice
 
+        self.taxiBackwardsChoice = self.taxiBackwardsChooser.getSelected()
+
         if ((self.tagchoice != None) and (self.mobilitychoice != None)):
             pathDir = f"/output/tagid{self.tagchoice}{self.mobilitychoice}"
             resolved = wpilib.getDeployDirectory() + pathDir
             return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson(resolved)
-        
+
         else:
             if wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kBlue:
                 return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson(wpilib.getDeployDirectory() + "/output/failsafe_blue.wpilib.json")

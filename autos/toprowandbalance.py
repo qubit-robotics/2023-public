@@ -5,6 +5,7 @@ from hud.autonchooser import AutonChooser
 
 from subsystems.drivesubsystem import DriveSubsystem
 from subsystems.armsubsystem import ArmSubsystem
+from subsystems.grippersubsystem import GripperSubsystem
 
 from commands.ramsete import PathCommand
 from commands.balancechargestation import BalanceChargeStation
@@ -12,12 +13,12 @@ from commands.dropgamepieceauto import DropGamePieceAuto
 
 class TopRowAndBalance(commands2.SequentialCommandGroup):
 
-    def __init__(self, drive_subsystem: DriveSubsystem, arm_subsystem: ArmSubsystem, auton_chooser: AutonChooser):
+    def __init__(self, drive_subsystem: DriveSubsystem, arm_subsystem: ArmSubsystem, gripper_subsystem: GripperSubsystem,auton_chooser: AutonChooser):
         super().__init__()
         self.addCommands(
             [
-            DropGamePieceAuto(arm_subsystem, drive_subsystem),
-            PathCommand(drive_subsystem, auton_chooser.generatePath()).getRamseteCommand(),
-            BalanceChargeStation(drive_subsystem).getCommand()
+            DropGamePieceAuto(arm_subsystem, drive_subsystem, gripper_subsystem),
+            # PathCommand(drive_subsystem, auton_chooser.generatePath()).getRamseteCommand(),
+            # BalanceChargeStation(drive_subsystem).getCommand()
             ]
         )

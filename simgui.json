@@ -1,5 +1,10 @@
 {
   "HALProvider": {
+    "Addressable LEDs": {
+      "window": {
+        "visible": true
+      }
+    },
     "Other Devices": {
       "ADIS16448[4]": {
         "header": {
@@ -20,6 +25,11 @@
         "header": {
           "open": true
         }
+      }
+    },
+    "PWM Outputs": {
+      "window": {
+        "visible": true
       }
     }
   },
@@ -42,12 +52,26 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/tagchooser": {
+        "window": {
+          "visible": true
+        }
       }
     }
   },
   "NetworkTables": {
+    "Persistent Values": {
+      "open": false
+    },
     "transitory": {
       "SmartDashboard": {
+        "estimatorField": {
+          "open": true
+        },
+        "mobilitychooser": {
+          "open": true
+        },
         "open": true
       }
     }

@@ -12,10 +12,10 @@ class BalanceChargeStation:
         self.drive_subsystem = drive_subsystem
 
     def balancePeriodic(self):
-        if self.drive_subsystem.gyro.getGyroAngleY() < -7:
-            self.drive_subsystem.voltDrive(-1.5, -1.5)
-        elif self.drive_subsystem.gyro.getGyroAngleY() > 7:
-            self.drive_subsystem.voltDrive(1.5, 1.5)
+        if self.drive_subsystem.gyro.getGyroAngleY() < -11:
+            self.drive_subsystem.voltDrive(1, 1)
+        elif self.drive_subsystem.gyro.getGyroAngleY() > 11:
+            self.drive_subsystem.voltDrive(-1, -1)
         else:
             self.drive_subsystem.drive(0, 0)
 
