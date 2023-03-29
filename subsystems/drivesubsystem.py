@@ -96,7 +96,7 @@ class DriveSubsystem(commands2.SubsystemBase):
             )
         else:
             self.drivetrain.arcadeDrive(
-                self.slewRateLimiterX.calculate(x), self.slewRateLimiterZ.calculate(z)
+                self.slewRateLimiterX.calculate(x), z
             )
 
     def voltDrive(self, leftVolts, rightVolts):
