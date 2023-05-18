@@ -2,7 +2,7 @@
   {
     "name": "/Preferences/kP",
     "type": "float",
-    "value": 0.2,
+    "value": 0.0,
     "properties": {
       "persistent": true
     }
@@ -18,15 +18,7 @@
   {
     "name": "/Preferences/kD",
     "type": "float",
-    "value": 1.0,
-    "properties": {
-      "persistent": true
-    }
-  },
-  {
-    "name": "/Preferences/.type",
-    "type": "string",
-    "value": "RobotPreferences",
+    "value": 0.0,
     "properties": {
       "persistent": true
     }

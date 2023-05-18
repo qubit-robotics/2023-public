@@ -2,11 +2,11 @@ import commands2
 import commands2.cmd
 import wpilib
 
-from subsystems.armsubsystem import ArmSubsystem
+from subsystem.arm import ARM 
 
 class DropGamePieceAuto(commands2.SequentialCommandGroup):
 
-    def __init__(self, arm_subsystem: ArmSubsystem):
+    def __init__(self, arm_subsystem: ARM):
         self.arm_subsystem = arm_subsystem
 
         self.extendCommand = commands2.cmd.runOnce(
@@ -35,4 +35,3 @@ class DropGamePieceAuto(commands2.SequentialCommandGroup):
             self.retractCommand,
             self.waitForRetract
         )
-

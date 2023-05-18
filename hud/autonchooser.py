@@ -44,9 +44,9 @@ class AutonChooser(commands2.SubsystemBase):
         
         else:
             if wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kBlue:
-                return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson("paths/output/failsafe_blue.wpilib.json")
+                return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson("paths/output/test.wpilib.json")
             elif wpilib.DriverStation.getAlliance() == wpilib.DriverStation.Alliance.kRed:
-                return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson("paths/output/failsafe_red.wpilib.json")
+                return wpimath.trajectory.TrajectoryUtil.fromPathweaverJson("paths/output/test.wpilib.json")
             else:
                 return wpimath.trajectory.Trajectory()
         

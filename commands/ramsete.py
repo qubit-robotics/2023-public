@@ -5,8 +5,8 @@ import wpimath.trajectory.constraint
 import wpimath.geometry
 from wpilib import SmartDashboard
 
-from constants import DriveConstants
-from subsystems.drivesubsystem import DriveSubsystem
+from contants import DriveConstants
+from subsystem.drive import drive as DriveSubsystem
 
 
 class PathCommand:

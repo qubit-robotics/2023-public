@@ -3,8 +3,8 @@ import commands2
 import wpimath.geometry
 from wpilib import SmartDashboard
 
-from subsystems.drivesubsystem import DriveSubsystem
-from subsystems.armsubsystem import ArmSubsystem
+from subsystem.drive import drive as DriveSubsystem
+from subsystem.arm import ARM as ArmSubsystem
 
 class ArmVisualizer(commands2.SubsystemBase):
     """
